@@ -776,12 +776,7 @@ struct controller_impl {
    void sign_block( const std::function<signature_type( const digest_type& )>& signer_callback, bool trust  ) {
       auto p = pending->_pending_block_state;
 
-      try {
-         p->sign( signer_callback, false); //trust );
-      } catch ( ... ) {
-         edump(( fc::json::to_pretty_string( p->header ) ) );
-         throw;
-      }
+      p->sign( signer_callback, false); //trust );
 
       static_cast<signed_block_header&>(*p->block) = p->header;
    } /// sign_block
@@ -1047,7 +1042,7 @@ struct controller_impl {
          vector<account_name> blacklisted;
          blacklisted.reserve( actors.size() );
          set_intersection( actors.begin(), actors.end(),
-                           conf.actor_blacklist.begin(), conf.actor_whitelist.end(),
+                           conf.actor_blacklist.begin(), conf.actor_blacklist.end(),
                            std::back_inserter(blacklisted)
                          );
          EOS_ASSERT( blacklisted.size() == 0, actor_blacklist_exception,
